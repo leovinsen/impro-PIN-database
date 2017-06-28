@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="450.0" spacing="5.0" styleClass="theme" stylesheets="@impro.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="impro.AddMemberController">
+   <children>
+      <Label fx:id="labelIP" text="IP:" />
+      <TextField fx:id="fieldIP" promptText="Masukkan IP" />
+      <Label fx:id="warningIP" styleClass="warning-label" />
+      <Label fx:id="labelPIN" text="PIN:" />
+      <TextField fx:id="fieldPIN" promptText="Masukkan PIN" />
+      <Label fx:id="warningPIN" styleClass="warning-label" />
+      <Label fx:id="labelName" text="Nama (optional):" />
+      <TextField fx:id="fieldName" promptText="Masukkan nama" />
+      <Label fx:id="result" />
+      <Button id="submit" fx:id="btnSubmit" defaultButton="true" mnemonicParsing="false" onAction="#addMember" text="Submit" translateY="40.0" />
+   </children>
+   <padding>
+      <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+   </padding>
+</VBox>

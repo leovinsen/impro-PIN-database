@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="15.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="impro.ImproController">
+   <children>
+      <Button fx:id="btnSearch" alignment="CENTER" mnemonicParsing="false" onAction="#searchMember" prefHeight="40.0" prefWidth="170.0" text="Search">
+         <font>
+            <Font name="Trebuchet MS" size="22.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnAddMember" alignment="CENTER" mnemonicParsing="false" onAction="#addMember" prefHeight="40.0" prefWidth="170.0" text="Add Member" GridPane.rowIndex="1">
+         <font>
+            <Font name="Trebuchet MS" size="22.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnEditMember" alignment="CENTER" mnemonicParsing="false" onAction="#editMember" prefHeight="40.0" prefWidth="170.0" text="Edit Member" GridPane.rowIndex="2">
+         <font>
+            <Font name="Trebuchet MS" size="22.0" />
+         </font>
+      </Button>
+   </children>
+</VBox>
