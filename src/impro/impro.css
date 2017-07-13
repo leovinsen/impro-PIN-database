@@ -11,18 +11,24 @@ and open the template in the editor.
 
 
 .theme {
+    -fx-background-color: white;
     -fx-font-size: 18px;
 }
 .search-window{
     -fx-font-size: 18px;
 }
 
+
 .warning-label{
     -fx-text-fill: red;
 }
-.toolbar {
-    -fx-background-color: derive(black, 70%);
+.title {
+    -fx-font-size: 24px;
 }
+#success {
+    -fx-text-fill: derive(green,70%);
+}
+
 
 .button {
     -fx-background-color:
@@ -38,14 +44,30 @@ and open the template in the editor.
         );
     -fx-background-radius: 4, 3;
     -fx-background-insets: 0, 1;
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.55) , 5, 0.0 , 0 , 1 );
+    -fx-font-size:22px;
     -fx-text-fill: derive(grey, -60%);
     -fx-padding: 3 11 3 11;
 }
 #delete {
     -fx-background-color: derive(red, 70%);
+    -fx-text-fill: white;
 }
 
 #submit {
     -fx-background-color: derive(green,70%);
+    -fx-text-fill: white;
+    
 }
+
+#table-view {
+    -fx-alignment: CENTER-RIGHT;
+}
+
+.add-induk-vbox{
+    -fx-background-color: #00AFD1;
+}
+.induk-elements{
+    -fx-text-fill: white;
+}
+
+

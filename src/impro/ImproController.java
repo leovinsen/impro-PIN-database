@@ -9,14 +9,12 @@ import model.Database;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 /**
@@ -32,6 +30,7 @@ public class ImproController implements Initializable {
     @FXML private Button btnSearch;
     @FXML private Button btnAddMember;
     @FXML private Button btnEditMember;
+    @FXML private Button btnHistory;
     
     @FXML
     void searchMember() throws IOException{
@@ -61,7 +60,15 @@ public class ImproController implements Initializable {
         stage3.show();
     }
     
-    
+    @FXML
+    void findHistory() throws IOException{
+        Parent root = FXMLLoader.load(getClass().getResource("memberhistory.fxml"));
+        Stage stage = new Stage();
+        stage.setTitle("History");
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         d = new Database();

@@ -10,11 +10,12 @@
 
 <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="547.0" prefWidth="800.0" styleClass="search-window" stylesheets="@impro.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="impro.SearchMemberController">
    <items>
-      <TableView fx:id="tableSearch" editable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#deleteRow" prefHeight="400.0" prefWidth="800.0" styleClass="theme" stylesheets="@impro.css">
+      <TableView id="table-view" fx:id="tableSearch" editable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#deleteRow" prefHeight="400.0" prefWidth="800.0" styleClass="theme" stylesheets="@impro.css">
         <columns>
           <TableColumn fx:id="colIP" prefWidth="168.0" text="IP" />
           <TableColumn fx:id="colPIN" prefWidth="162.0" text="PIN" />
-          <TableColumn fx:id="colName" prefWidth="470.0" text="Name" />
+          <TableColumn fx:id="colName" prefWidth="268.0" text="Name" />
+            <TableColumn fx:id="colAccountNo" prefWidth="191.0" text="Nomor Rekening" />
         </columns>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -36,14 +37,18 @@
             </HBox>
             <HBox alignment="CENTER_RIGHT" prefHeight="115.0" prefWidth="500.0" spacing="15.0">
                <children>
-                  <Label fx:id="labelWarning" prefHeight="38.0" prefWidth="234.0" textFill="#a11f1f" translateX="-290.0">
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
-                     <padding>
-                        <Insets left="10.0" />
-                     </padding>
-                  </Label>
+                  <HBox nodeOrientation="LEFT_TO_RIGHT" prefWidth="500.0">
+                     <children>
+                        <Label fx:id="labelWarning" prefHeight="38.0" prefWidth="234.0" textFill="#a11f1f">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </HBox>
                   <Button id="submit" fx:id="btnSave" alignment="CENTER" mnemonicParsing="false" onAction="#printTable" prefHeight="37.0" prefWidth="141.0" text="Save to Excel" />
                   <Button id="delete" fx:id="btnClear" mnemonicParsing="false" onAction="#clearTable" prefHeight="45.0" prefWidth="105.0" text="Clear" />
                </children>

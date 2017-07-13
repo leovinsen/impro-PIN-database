@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" spacing="5.0" styleClass="theme" stylesheets="@impro.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="impro.MemberHistoryController">
+   <padding>
+      <Insets bottom="25.0" left="25.0" right="25.0" top="30.0" />
+   </padding>
+   <children>
+      <HBox spacing="10.0">
+         <children>
+            <TextField fx:id="fieldIP" prefHeight="44.0" prefWidth="611.0" promptText="Masukkan IP" text="IP" />
+            <Button fx:id="btnSubmit" defaultButton="true" mnemonicParsing="false" onAction="#showHistory" prefHeight="44.0" prefWidth="131.0" text="Submit" />
+         </children>
+      </HBox>
+      <Label fx:id="warningIP" styleClass="warning-label" translateX="10.0" />
+      <TableView fx:id="tableHistory" prefHeight="436.0" prefWidth="750.0">
+        <columns>
+          <TableColumn fx:id="colAccountNo" prefWidth="167.0" text="No. Rekening" />
+            <TableColumn fx:id="colAccountOwner" prefWidth="340.0" text="Atas Nama" />
+          <TableColumn fx:id="colDate" minWidth="0.0" prefWidth="154.0" text="Tanggal" />
+            <TableColumn fx:id="colHour" prefWidth="88.0" text="Jam" />
+        </columns>
+      </TableView>
+   </children>
+</VBox>

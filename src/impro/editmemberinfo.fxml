@@ -8,21 +8,92 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="450.0" spacing="5.0" styleClass="theme" stylesheets="@impro.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="impro.EditMemberInfoController">
+<VBox prefHeight="600.0" prefWidth="600.0" spacing="5.0" styleClass="theme" stylesheets="@impro.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="impro.EditMemberInfoController">
    <children>
-      <Label fx:id="labelOldInfo" />
-      <Label fx:id="labelIP" text="IP:" />
-      <TextField fx:id="fieldIP" promptText="Masukkan IP" />
-      <Label fx:id="warningIP" styleClass="warning-label" />
-      <Label fx:id="labelPIN" text="PIN:" />
-      <TextField fx:id="fieldPIN" promptText="Masukkan PIN" />
-      <Label fx:id="warningPIN" styleClass="warning-label" />
-      <Label fx:id="labelName" text="Nama (optional):" />
-      <TextField fx:id="fieldName" promptText="Masukkan nama" />
-      <Label fx:id="result" />
-      <Button id="submit" fx:id="btnSubmitChanges" defaultButton="true" mnemonicParsing="false" onAction="#editMember" text="Submit" translateY="60.0" />
+      <Label fx:id="labelOldInfo" alignment="CENTER" prefHeight="80.0" prefWidth="548.0" styleClass="title" textAlignment="JUSTIFY" wrapText="true" />
+      <HBox spacing="30.0">
+         <children>
+            <VBox>
+               <children>
+                  <TextField fx:id="fieldIP" prefHeight="39.0" prefWidth="260.0" promptText="IP*" />
+                  <Label fx:id="warningIP" styleClass="warning-label">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </VBox>
+            <VBox>
+               <children>
+                  <TextField fx:id="fieldPIN" prefWidth="260.0" promptText="PIN*" />
+                  <Label fx:id="warningPIN" styleClass="warning-label">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <TextField fx:id="fieldName" promptText="Nama (optional)" />
+      <Label fx:id="labelSpacing" />
+      <HBox spacing="30.0">
+         <children>
+            <VBox>
+               <children>
+                  <TextField fx:id="fieldAccountNo" prefHeight="39.0" prefWidth="258.0" promptText="No. Rekening (optional)" />
+                  <Label fx:id="warningAccountNo" styleClass="warning-label" />
+               </children>
+            </VBox>
+            <VBox>
+               <children>
+                  <TextField fx:id="fieldAccountName" prefHeight="39.0" prefWidth="262.0" promptText="Atas Nama (optional)" />
+                  <Label fx:id="warningAccountName" styleClass="warning-label" translateX="10.0" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox layoutX="35.0" layoutY="267.0" spacing="30.0">
+         <children>
+            <VBox>
+               <children>
+                  <TextField fx:id="fieldBankName" prefHeight="39.0" prefWidth="258.0" promptText="Nama Bank (optional)" />
+               </children>
+            </VBox>
+            <VBox>
+               <children>
+                  <TextField fx:id="fieldBranchName" prefHeight="39.0" prefWidth="262.0" promptText="Kantor Cabang (optional)" />
+               </children>
+            </VBox>
+         </children>
+         <VBox.margin>
+            <Insets bottom="28.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox spacing="30.0">
+         <children>
+            <VBox layoutX="35.0" layoutY="75.0">
+               <children>
+                  <TextField id="induk-elements" fx:id="fieldFirstChild" prefWidth="260.0" promptText="Kaki 1 (optional)" />
+                  <Label fx:id="warningFirstChild" styleClass="warning-label" translateX="10.0" />
+               </children>
+            </VBox>
+            <VBox>
+               <children>
+                  <TextField id="induk-elements" fx:id="fieldSecondChild" prefWidth="260.0" promptText="Kaki 2 (optional)" />
+                  <Label fx:id="warningSecondChild" styleClass="warning-label" translateX="10.0" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <VBox alignment="CENTER">
+         <children>
+            <Label fx:id="result" styleClass="success-label" />
+            <Button id="submit" fx:id="btnSubmit" alignment="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#editMember" prefHeight="45.0" prefWidth="125.0" text="SUBMIT" translateY="20.0" />
+         </children>
+      </VBox>
    </children>
    <padding>
-      <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+      <Insets left="25.0" right="25.0" top="25.0" />
    </padding>
 </VBox>

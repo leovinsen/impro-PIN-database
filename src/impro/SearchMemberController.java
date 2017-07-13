@@ -7,6 +7,7 @@ package impro;
 
 import model.Member;
 import static impro.ImproController.d;
+import static impro.Methods.isValidIP;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,6 +38,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import static model.Database.checkMember;
+import static model.Database.findMemberByName;
+import static model.Database.getMemberInfo;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -55,6 +59,7 @@ public class SearchMemberController implements Initializable {
     @FXML private TableColumn<Member,String> colIP;
     @FXML private TableColumn<Member,String> colPIN;
     @FXML private TableColumn<Member,String> colName;
+    @FXML private TableColumn<Member,String> colAccountNo;
     @FXML private TextField inputField;
    // @FXML private Button btnSubmit;
     @FXML private Button btnSave;
@@ -72,7 +77,40 @@ public class SearchMemberController implements Initializable {
         enteredMembers = new ArrayList<>();
         configureTable();
         configureTextField();
-    }    
+    }
+    
+    /**
+     * sets <tt> inputField </tt> text to IP initially, limits the length of
+     * input to 10 characters and removes the warning notifications when user
+     * has been notified of it.
+     */
+    private void configureTextField() {
+//        inputField.textProperty().addListener((final ObservableValue<? extends String> ov, final String oldValue, final String newValue) -> {
+//            if (inputField.getText().length() > 10) {
+//                String s = inputField.getText().substring(0, 10);
+//                inputField.setText(s);
+//            }
+//            if (inputField.getText().length() == 9) {
+//                labelWarning.setText("");
+//            }
+//        });
+
+    }
+    
+    /**
+     * populates the table columns with <tt>CellValueFactory</tt> to show
+     * corresponding values.
+     */
+    private void configureTable() {
+        colIP.setCellValueFactory(new PropertyValueFactory<>("IP"));
+        colPIN.setCellValueFactory(new PropertyValueFactory<>("PIN"));
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colAccountNo.setCellValueFactory(new PropertyValueFactory<>("accountNo"));
+        
+        members = FXCollections.observableArrayList();
+        tableSearch.setItems(members);
+    }
+    
     
     /**
      * Listener for 
@@ -81,7 +119,11 @@ public class SearchMemberController implements Initializable {
     @FXML
     public void keyListener(KeyEvent event){
         if(event.getCode() == KeyCode.ENTER){
-            submitSearch();
+            try {
+                submitSearch();
+            } catch (SQLException ex) {
+                Logger.getLogger(SearchMemberController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             event.consume();
         }
     }
@@ -90,43 +132,99 @@ public class SearchMemberController implements Initializable {
      * Finds a record in the database where the IP matches the user input
      */
     @FXML
-    private void submitSearch(){
-        try {
-            boolean dup = false;
-            String userInput = inputField.getText();
-            //Check if the input is a duplicate
-            for (String s : enteredMembers) {
-                if (s.equals(userInput)) {
-                    dup = true;
-                    break;
-                }
-            }
-            //If the entered IP is not a duplicate, search for it in the database.
-            if (!dup) {
+    private void submitSearch() throws SQLException{
+//        boolean dup = false;
+        String userInput = inputField.getText();
+        if(isValidIP(userInput)){
+            try {
                 //If arr is not null, the record is found in the database.
                 //arr[0] = PIN, arr[1] = name
-                String[] arr = d.findPINByIP(userInput);
-  
-                if (!(arr == null)) {
-                    members.add(new Member(userInput, arr[0], arr[1]));
-                    enteredMembers.add(userInput);
-                    inputField.setText("IP");
-                    inputField.end();
-                //If arr is null, the record is not found in the database.
+                if (checkMember(userInput)) //String[] arr = d.findPINByIP(userInput); ///needto change
+                {
+                    createMember(getMemberInfo());
+//                    members.add(new Member(userInput, arr[1], arr[2], arr[3]));
+//                    if(arr[4] != null){
+//                        if (checkMember(arr[4])){
+//                            String[] arr_child = getMemberInfo();
+//                            members.add(new Member(">>" + arr_child[0], arr_child[1], arr_child[2], arr_child[3]));
+//                        } else {
+//                            members.add(new Member (">>" + arr[4], "tidak ditemukan", "", ""));
+//                        }                       
+//                    }
+//                    if(arr[5] != null){
+//                        if (checkMember(arr[5])){
+//                            String[] arr_child = getMemberInfo();
+//                            members.add(new Member(">>" + arr_child[0], arr_child[1], arr_child[2], arr_child[3]));
+//                        } else {
+//                            members.add(new Member (">>" + arr[5], "tidak ditemukan", "", ""));
+//                        }     
+//                    }
+//                    enteredMembers.add(userInput);                   
                 } else {
-                    labelWarning.setText("Member not found.");
+                    labelWarning.setText("IP not found.");
                 }
-            } else {
-                //If IP is already added to the TableView, notify the user.
-                labelWarning.setText("IP duplikat.");
-                inputField.setText("IP");
-                inputField.end();
+            } catch (SQLException ex) {
+                Logger.getLogger(SearchMemberController.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(SearchMemberController.class.getName()).log(Level.SEVERE, null, ex);
+        } else {
+            ArrayList<String[]> arr = findMemberByName(userInput);
+            if(!arr.isEmpty()){
+            for(String[] memberInfo : arr){
+                createMember(memberInfo);
+            }
+            } else {
+                labelWarning.setText("Name not found.");
+            }
         }
+//        for (String s : enteredMembers) {
+//            if (s.equals(userInput)) {
+//                dup = true;
+//                break;
+//            }
+//        }
+//        if (!dup) {
+            
+//            if (!(arr == null)) {
+//                members.add(new Member(userInput, arr[0], arr[1]));
+//                enteredMembers.add(userInput);
+//                inputField.setText("IP");
+//                inputField.end();
+                //If arr is null, the record is not found in the database.
+            
+//        } else {
+//            //If IP is already added to the TableView, notify the user.
+//            labelWarning.setText("IP duplikat.");
+//            inputField.setText("IP");
+//            inputField.end();
+//        }
     }
 
+    private void createMember(String[] arr) throws SQLException {
+        //[0] = IP
+        //[1] = PIN
+        //[2] = Name
+        //[3] = Account Number
+        //[4] = 1st child (null if not applicable)
+        //[5] = 2nd child (null if not applicable)
+        members.add(new Member(arr[0], arr[1], arr[2], arr[3]));
+        if (arr[4] != null) {
+            if (checkMember(arr[4])) {
+                String[] arr_child = getMemberInfo();
+                members.add(new Member(">>" + arr_child[0], arr_child[1], arr_child[2], arr_child[3]));
+            } else {
+                members.add(new Member(">>" + arr[4], "tidak ditemukan", "", ""));
+            }
+        }
+        if (arr[5] != null) {
+            if (checkMember(arr[5])) {
+                String[] arr_child = getMemberInfo();
+                members.add(new Member(">>" + arr_child[0], arr_child[1], arr_child[2], arr_child[3]));
+            } else {
+                members.add(new Member(">>" + arr[5], "tidak ditemukan", "", ""));
+            }
+        }
+    }
+    
     /**
      * Delete the currently selected row when user presses Del.
      * @param event 
@@ -158,7 +256,6 @@ public class SearchMemberController implements Initializable {
             alert.setContentText("Failed to create the excel file.");
             alert.showAndWait();
             Logger.getLogger(SearchMemberController.class.getName()).log(Level.SEVERE, null, ex);
-            
         }
     }
     
@@ -175,41 +272,14 @@ public class SearchMemberController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             tableSearch.getItems().clear();
+            enteredMembers.clear();
         }
     }
     
-    /**
-     * populates the table columns with <tt>CellValueFactory</tt> to show
-     * corresponding values.
-     */
-    private void configureTable() {
-        colIP.setCellValueFactory(new PropertyValueFactory<>("IP"));
-        colPIN.setCellValueFactory(new PropertyValueFactory<>("PIN"));
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        
-        members = FXCollections.observableArrayList();
-        tableSearch.setItems(members);
-    }
     
     
-    /**
-     * sets <tt> inputField </tt> text to IP initially, limits
-     * the length of input to 10 characters and removes the 
-     * warning notifications when user has been notified of it.
-     */
-    private void configureTextField() {
-        inputField.setText("IP");
-        inputField.textProperty().addListener((final ObservableValue<? extends String> ov, final String oldValue, final String newValue) -> {
-            if (inputField.getText().length() > 10) {
-                String s = inputField.getText().substring(0, 10);
-                inputField.setText(s);
-            }
-            if (inputField.getText().length() == 9){
-                labelWarning.setText("");
-            }
-        });
-        
-    }
+    
+   
     
     public void writeExcel() throws Exception {
         
@@ -284,7 +354,8 @@ public class SearchMemberController implements Initializable {
             row.createCell(0).setCellValue(member.getIP());
             row.createCell(1).setCellValue(member.getPIN());
             String name = member.getName();
-            name = splitName(name, 35);
+            if(name == null) name = "";
+            //name = splitName(name, 35);
             row.createCell(2).setCellValue(name);
             for(Cell c : row){
                 c.setCellStyle(styleRegular);
@@ -297,26 +368,26 @@ public class SearchMemberController implements Initializable {
         sheet.autoSizeColumn(2);
     }
 
-    private String splitName(String name, int length) {
-        //take 30
-        String newName = name;
-        if (name.length() >= length) {
-            String firstPart = name.substring(0, length - 1);
-            String secondPart = name.substring(length - 1, name.length() - 1);
-            secondPart = secondPart.trim();
-            System.out.println(firstPart);
-            System.out.println(secondPart);
-            firstPart = firstPart + "\n";
-            if(secondPart.length() > length){
-                secondPart = splitName(secondPart, length);
-            }
-            return firstPart+secondPart;
-            
-        } else {
-            return newName;
-        }
-
-    }
+//    private String splitName(String name, int length) {
+//        //take 30
+//        String newName = name;
+//        if (name.length() >= length) {
+//            String firstPart = name.substring(0, length - 1);
+//            String secondPart = name.substring(length - 1, name.length() - 1);
+//            secondPart = secondPart.trim();
+//            System.out.println(firstPart);
+//            System.out.println(secondPart);
+//            firstPart = firstPart + "\n";
+//            if(secondPart.length() > length){
+//                secondPart = splitName(secondPart, length);
+//            }
+//            return firstPart+secondPart;
+//            
+//        } else {
+//            return newName;
+//        }
+//
+//    }
 }
     
 

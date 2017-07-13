@@ -15,17 +15,28 @@ public class Member {
     private SimpleStringProperty ip;
     private SimpleStringProperty pin;
     private SimpleStringProperty name;
+    private SimpleStringProperty accountNo;
 
-    public Member(String ip, String pin, String name) {
+    public Member(String ip, String pin, String name, String accountNo) {
         this.ip = new SimpleStringProperty(ip);
         this.pin = new SimpleStringProperty(pin);
         this.name = new SimpleStringProperty(name);
+        this.accountNo = new SimpleStringProperty(accountNo);
     }
 
     Member() {
         this.ip = null;
         this.pin = null;
         this.name = null;
+        this.accountNo = null;
+    }
+
+    public String getAccountNo() {
+        return accountNo.getValue();
+    }
+
+    public void setAccountNo(SimpleStringProperty accountNo) {
+        this.accountNo = accountNo;
     }
 
     public String getIP() {
