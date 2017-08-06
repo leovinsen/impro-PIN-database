@@ -68,6 +68,15 @@ public class ImproController implements Initializable {
         stage.setScene(new Scene(root));
         stage.show();
     }
+   
+    @FXML
+    void searchAccount() throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("searchaccount.fxml"));
+        Stage stage = new Stage();
+        stage.setTitle("Search Rekening");
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
      
     @Override
     public void initialize(URL url, ResourceBundle rb) {

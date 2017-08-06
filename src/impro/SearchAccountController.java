@@ -5,15 +5,13 @@
  */
 package impro;
 
-import model.Member;
 import static impro.ImproController.d;
 import static impro.Methods.createProgressDialog;
-import static impro.Methods.isValidIP;
+import static impro.Methods.isNumeric;
+import static impro.Methods.isValidRekening;
 import java.awt.Desktop;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -23,7 +21,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -31,7 +28,6 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -42,9 +38,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import static model.Database.checkMember;
-import static model.Database.findMemberByName;
-import static model.Database.getMemberInfo;
+import model.Account;
+import model.Database.SearchMethod;
+import static model.Database.findMemberByAccountName;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -57,142 +53,147 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  * @author asus
  */
-public class SearchMemberController implements Initializable {
+public class SearchAccountController implements Initializable {
 
-    @FXML private TableView<Member> tableSearch;
-    @FXML private TableColumn<Member,String> colIP;
-    @FXML private TableColumn<Member,String> colPIN;
-    @FXML private TableColumn<Member,String> colName;
-    @FXML private TableColumn<Member,String> colAccountNo;
+    @FXML private TableView<Account> tableSearch;
+
+    @FXML private TableColumn<Account,String> colIP;
+    @FXML private TableColumn<Account,String> colPIN;
+    @FXML private TableColumn<Account,String> colName;
+    @FXML private TableColumn<Account,String> colAccountNo;
+
+
     @FXML private TextField inputField;
-   // @FXML private Button btnSubmit;
     @FXML private Button btnSave;
     @FXML private Button btnClear;
     @FXML private Label labelWarning;
     
-    private ObservableList<Member> members;
-    private ArrayList<String> enteredMembers;
+    private ObservableList<Account> accounts;
+    private int counter = 0;
     
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        enteredMembers = new ArrayList<>();
         configureTable();
-        configureTextField();
-    }
+    }    
     
     /**
-     * sets <tt> inputField </tt> text to IP initially, limits the length of
-     * input to 10 characters and removes the warning notifications when user
-     * has been notified of it.
-     */
-    private void configureTextField() {
-//        inputField.textProperty().addListener((final ObservableValue<? extends String> ov, final String oldValue, final String newValue) -> {
-//            if (inputField.getText().length() > 10) {
-//                String s = inputField.getText().substring(0, 10);
-//                inputField.setText(s);
-//            }
-//            if (inputField.getText().length() == 9) {
-//                labelWarning.setText("");
-//            }
-//        });
-
-    }
-    
-    /**
-     * populates the table columns with <tt>CellValueFactory</tt> to show
-     * corresponding values.
+     * Sets up all <tt>TableColumn</tt> and the <tt>TableView</tt>.
      */
     private void configureTable() {
-        colIP.setCellValueFactory(new PropertyValueFactory<>("IP"));
-        colPIN.setCellValueFactory(new PropertyValueFactory<>("PIN"));
+
+        colIP.setCellValueFactory(new PropertyValueFactory<>("ip"));
+        colPIN.setCellValueFactory(new PropertyValueFactory<>("pin"));
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colAccountNo.setCellValueFactory(new PropertyValueFactory<>("accountNo"));
-        
-        members = FXCollections.observableArrayList();
-        tableSearch.setItems(members);
+        colAccountNo.setCellValueFactory(new PropertyValueFactory("accountNo"));
+
+        accounts = FXCollections.observableArrayList();
+        tableSearch.setItems(accounts);
     }
     
     
-    /**
-     * Listener for 
-     * @param event 
-     */
     @FXML
-    public void keyListener(KeyEvent event){
-        if(event.getCode() == KeyCode.ENTER){
+    public void keyListener(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
             try {
                 submitSearch();
             } catch (SQLException ex) {
-                Logger.getLogger(SearchMemberController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SearchAccountController.class.getName()).log(Level.SEVERE, null, ex);
             }
             event.consume();
         }
     }
     
     /**
-     * Finds a record in the database where the IP matches the user input
+     * Performs a search for the input typed by the user when "Enter" key is pressed.
+     * Results are displayed in the table.
+     * @throws SQLException 
      */
     @FXML
-    private void submitSearch() throws SQLException{
-//        boolean dup = false;
-        String userInput = inputField.getText();
-        if (isValidIP(userInput)) {
-            try {
-                //If arr is not null, the record is found in the database.
-                //arr[0] = PIN, arr[1] = name
-                if (checkMember(userInput))  {
-                    labelWarning.setText("");
-                    createMember(getMemberInfo());
-                } else {
-                    labelWarning.setText("IP not found.");
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(SearchMemberController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            labelWarning.setText("");
-            ArrayList<String[]> arr = findMemberByName(userInput);
-            if(!arr.isEmpty()){
-            for(String[] memberInfo : arr){
-                createMember(memberInfo);
-            }
-            } else {
-                labelWarning.setText("Name not found.");
-            }
-        }
-    }
+    public void submitSearch() throws SQLException{
+        String input = inputField.getText();
+        //If is valid then it is an account number
+        if (isValidRekening(input)) {
+            //If true, then the account is found in the database
+            
+            //String accountOwner = d.getOwner(input);
+            String[] accountInfo = d.getAccountInfo(input, SearchMethod.ACCOUNT_NUMBER);
 
-    private void createMember(String[] arr) throws SQLException {
-        //[0] = IP
-        //[1] = PIN
-        //[2] = Name
-        //[3] = Account Number
-        //[4] = 1st child (null if not applicable)
-        //[5] = 2nd child (null if not applicable)
-        members.add(new Member(arr[0], arr[1], arr[2], arr[3]));
-        if (arr[4] != null) {
-            if (checkMember(arr[4])) {
-                String[] arr_child = getMemberInfo();
-                members.add(new Member(">>" + arr_child[0], arr_child[1], arr_child[2], arr_child[3]));
+            
+            if (accountInfo != null) {
+                ArrayList<String[]> arr = d.findMemberByAccountNo(input);
+                createAccounts(input, arr, accountInfo);
+//                ArrayList<Account> temp = new ArrayList<>();
+//
+//                //add them to tableview
+//                for (String[] s : arr) {
+//                    if (s[2] != null && s[2].equals(accountInfo[0])) {
+//                        Account a = new Account(++counter + ".  " + s[0], s[1], s[2], input, accountInfo[1], accountInfo[2]);
+//                        accounts.add(a);
+//                    } else {
+//                        Account a = new Account("--" + s[0], s[1], s[2], "", "", "");
+//                        temp.add(a);
+//                    }
+//                }
+//                temp.forEach((a) -> accounts.add(a));
             } else {
-                members.add(new Member(">>" + arr[4], "tidak ditemukan", "", ""));
+                labelWarning.setText("Rekening " + input + " tidak ditemukan.");
+            }
+        } //Else input is the owner's name
+        else {
+            ArrayList<ArrayList<String[]>> arr = findMemberByAccountName(input);
+            
+            
+
+            for (ArrayList<String[]> subArray : arr){
+//                ArrayList<Account> temp = new ArrayList<>();               
+                String accountNo = subArray.get(0)[3];
+                //0 = accountOwner
+                //1 = bankName
+                //2 = branchName
+                String[] accountInfo = d.getAccountInfo(accountNo, SearchMethod.ACCOUNT_NUMBER);
+                createAccounts(accountNo, subArray, accountInfo);
+                
+                //add them to tableview
+                //s[0] = ip
+                //s[1] = pin
+                //s[2] = name
+                //s[3] = account no
+//                for (String[] s : subArray) {
+//                    if (s[2] != null && s[2].equals(accountInfo[0])) {
+//                        Account a = new Account(++counter + ". " + s[0], s[1], s[2], accountNo, accountInfo[1], accountInfo[2]);
+//                        accounts.add(a);
+//                    } else {
+//                        //Account a = new Account("--" + s[0], s[1], s[2], accountNo);
+//                        Account a = new Account("--" + s[0], s[1], s[2], "", "", "");
+//                        temp.add(a);
+//                    }
+//                }
+//                temp.forEach((a) -> accounts.add(a));
             }
         }
-        if (arr[5] != null) {
-            if (checkMember(arr[5])) {
-                String[] arr_child = getMemberInfo();
-                members.add(new Member(">>" + arr_child[0], arr_child[1], arr_child[2], arr_child[3]));
-            } else {
-                members.add(new Member(">>" + arr[5], "tidak ditemukan", "", ""));
-            }
-        }
+        
+        inputField.clear();
+    }
+    
+    private void createAccounts(String input, ArrayList<String[]> arr, String[] accountInfo){
+        ArrayList<Account> temp = new ArrayList<>();
+        for (String[] s : arr) {
+                    if (s[2] != null && s[2].equals(accountInfo[0])) {
+                        Account a = new Account(++counter + ".  " + s[0], s[1], s[2], input, accountInfo[1], accountInfo[2]);
+                        accounts.add(a);
+                    } else {
+                        Account a = new Account("--" + s[0], s[1], s[2], "", "", "");
+                        temp.add(a);
+                    }
+                }
+                temp.forEach((a) -> accounts.add(a));
     }
     
     /**
-     * Delete the currently selected row when user presses Del.
+     * Deletes a single selected row when "Delete" key is pressed.
      * @param event 
      */
     @FXML
@@ -200,16 +201,16 @@ public class SearchMemberController implements Initializable {
         if(event.getCode() == KeyCode.DELETE){
             int selectedIndex = tableSearch.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0) {
-                Member removed = tableSearch.getItems().get(selectedIndex);
+                Account removed = tableSearch.getItems().get(selectedIndex);
                 tableSearch.getItems().remove(selectedIndex);
-                enteredMembers.remove(removed.getIP());
             }
             event.consume();
         }
     }
     
     /**
-     * prints the content of the TableView onto an A4 paper by default.
+     * Method for "Save to Excel" btnSave that creates a .xls file
+     * for the search results currently shown in the table.
      */
     @FXML
     private void printTable(){
@@ -237,8 +238,7 @@ public class SearchMemberController implements Initializable {
      * Create a .xls file and save it in the user's Documents folder.
      * The name of the file will be in the form of [Date] followed by file name.
      */
-    public void writeExcel() throws Exception {
-        
+    private void writeExcel(){
         Date date = new Date();
         SimpleDateFormat formatFolder = new SimpleDateFormat("dd-MMMM");
         SimpleDateFormat formatFile = new SimpleDateFormat("dd-MMMM HH.mm");
@@ -252,7 +252,7 @@ public class SearchMemberController implements Initializable {
         new File(folderPath).mkdir();
         
         //create new excel file in the new folder
-        String filePath = folderPath+ "\\excel_member " + dateForFile +".xlsx";
+        String filePath = folderPath+ "\\excel_rekening " + dateForFile +".xlsx";
         XSSFWorkbook workbook = new XSSFWorkbook();
         
         //method that populates cell with content & apply appropriate formatting to the document
@@ -283,8 +283,9 @@ public class SearchMemberController implements Initializable {
      */
     private void setDocumentFormat(XSSFWorkbook workbook){
         XSSFSheet sheet = workbook.createSheet("IMPRO");
+        sheet.getPrintSetup().setLandscape(true);
         int rowNum = 0;
-
+        
         //create Bold font with a size of 16px;
         CellStyle styleBold = workbook.createCellStyle();
         Font font = workbook.createFont();
@@ -294,10 +295,13 @@ public class SearchMemberController implements Initializable {
 
         //create header row with Bold font style.
         Row rowInitial = sheet.createRow(rowNum++);
+
         rowInitial.createCell(0).setCellValue("IP");
         rowInitial.createCell(1).setCellValue("PIN");
         rowInitial.createCell(2).setCellValue("Name");
         rowInitial.createCell(3).setCellValue("No. rekening");
+        rowInitial.createCell(4).setCellValue("Bank");
+        rowInitial.createCell(5).setCellValue("Nama Cabang");
         for (Cell c : rowInitial){
             c.setCellStyle(styleBold);
         }
@@ -306,37 +310,54 @@ public class SearchMemberController implements Initializable {
         CellStyle styleRegular = workbook.createCellStyle();
         styleRegular.setWrapText(true);
         Font fontRegular = workbook.createFont();
-        fontRegular.setFontHeightInPoints((short) 16);
+        fontRegular.setFontHeightInPoints((short) 13);
         styleRegular.setFont(fontRegular);
         
-        for (Member member : members) {
+        for (Account acc: accounts) {
             //create a new row for each record
             Row row = sheet.createRow(rowNum++);
             //cell 0 = IP, cell 1 = PIN, cell 2= Name, cell 3= acc no
-            row.createCell(0).setCellValue(member.getIP());
-            row.createCell(1).setCellValue(member.getPIN());
-            String name = member.getName();
-            if(name == null) name = ""; //replace null with empty string
+
+            String ip = acc.getIp();
+            String pin = acc.getPin();
+            String name = acc.getName();
+            String accNo = acc.getAccountNo();
+            String bankName = acc.getBankName();
+            String branchName = acc.getBranchName();
+     
+            if (name == null) {
+                name = ""; //replace null with empty string
+            }
+
+            //Determine which account is an induk
+            if (isNumeric(ip.substring(0, 1))) {
+                //create a space between "induk"s
+                row = sheet.createRow(rowNum++);
+            }
+
+            row.createCell(0).setCellValue(ip);
+            row.createCell(1).setCellValue(pin);
             row.createCell(2).setCellValue(name);
-            row.createCell(3).setCellValue(member.getAccountNo());
-            for(Cell c : row){
+            row.createCell(3).setCellValue(accNo);
+            row.createCell(4).setCellValue(bankName);
+            row.createCell(5).setCellValue(branchName);
+            for (Cell c : row) {
                 c.setCellStyle(styleRegular);
             }
-        }
-        
+        }       
         //adjust width of the columns
         sheet.autoSizeColumn(0); 
         sheet.autoSizeColumn(1); 
         sheet.autoSizeColumn(2);
         sheet.autoSizeColumn(3);
+        sheet.autoSizeColumn(4);
+        sheet.autoSizeColumn(5);
+        
     }
     
-    /**
-     * Removes the contents of everything in the table if user clicks OK.
-     */
-    @FXML
-    private void clearTable() {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
+    @FXML 
+    private void clearTable(){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
         alert.setHeaderText(null);
         alert.setContentText("Clear everything from the table?");
@@ -344,9 +365,9 @@ public class SearchMemberController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             tableSearch.getItems().clear();
-            enteredMembers.clear();
+            counter = 0;
         }
     }
-}
     
-
+    
+}

@@ -29,8 +29,11 @@ and open the template in the editor.
     -fx-text-fill: derive(green,70%);
 }
 
-
-.button {
+#main-menu {
+    -fx-pref-tile-height: 40;
+    -fx-pref-tile-width: 185;
+}
+/*.button {
     -fx-background-color:
         linear-gradient(
             derive(grey, 120%), 
@@ -47,7 +50,7 @@ and open the template in the editor.
     -fx-font-size:22px;
     -fx-text-fill: derive(grey, -60%);
     -fx-padding: 3 11 3 11;
-}
+}*/
 #delete {
     -fx-background-color: derive(red, 70%);
     -fx-text-fill: white;

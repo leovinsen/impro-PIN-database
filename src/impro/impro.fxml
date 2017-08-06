@@ -8,24 +8,29 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" prefHeight="250.0" prefWidth="200.0" spacing="15.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="impro.ImproController">
+<VBox alignment="CENTER" prefHeight="300.0" prefWidth="240.0" spacing="15.0" stylesheets="@impro.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="impro.ImproController">
    <children>
-      <Button fx:id="btnSearch" alignment="CENTER" mnemonicParsing="false" onAction="#searchMember" prefHeight="40.0" prefWidth="170.0" text="Search">
+      <Button id="main-menu" fx:id="btnSearchAccount" mnemonicParsing="false" onAction="#searchAccount" prefHeight="40.0" prefWidth="200.0" text="Search Rekening">
          <font>
             <Font name="Trebuchet MS" size="22.0" />
          </font>
       </Button>
-      <Button fx:id="btnAddMember" alignment="CENTER" mnemonicParsing="false" onAction="#addMember" prefHeight="40.0" prefWidth="170.0" text="Add Member" GridPane.rowIndex="1">
+      <Button id="main-menu" fx:id="btnSearch" alignment="CENTER" mnemonicParsing="false" onAction="#searchMember" prefHeight="40.0" prefWidth="200.0" text="Search Member">
          <font>
             <Font name="Trebuchet MS" size="22.0" />
          </font>
       </Button>
-      <Button fx:id="btnEditMember" alignment="CENTER" mnemonicParsing="false" onAction="#editMember" prefHeight="40.0" prefWidth="170.0" text="Edit Member" GridPane.rowIndex="2">
+      <Button id="main-menu" fx:id="btnAddMember" alignment="CENTER" mnemonicParsing="false" onAction="#addMember" prefHeight="40.0" prefWidth="200.0" styleClass=".button" text="Add Member" GridPane.rowIndex="1">
          <font>
             <Font name="Trebuchet MS" size="22.0" />
          </font>
       </Button>
-      <Button fx:id="btnHistory" mnemonicParsing="false" onAction="#findHistory" prefHeight="40.0" prefWidth="170.0" text="History">
+      <Button id="main-menu" fx:id="btnEditMember" alignment="CENTER" mnemonicParsing="false" onAction="#editMember" prefHeight="40.0" prefWidth="200.0" styleClass=".button" text="Edit Member" GridPane.rowIndex="2">
+         <font>
+            <Font name="Trebuchet MS" size="22.0" />
+         </font>
+      </Button>
+      <Button id="main-menu" fx:id="btnHistory" mnemonicParsing="false" onAction="#findHistory" prefHeight="40.0" prefWidth="200.0" styleClass=".button" text="History">
          <font>
             <Font name="Trebuchet MS" size="22.0" />
          </font>

@@ -207,6 +207,8 @@ public class EditMemberInfoController implements Initializable {
         if (inputName != null) {
             if (inputName.isEmpty()) {
                 inputName = null;
+            } else {
+                inputName = inputName.trim();
             }
         }
 
@@ -227,6 +229,8 @@ public class EditMemberInfoController implements Initializable {
             if(inputAccountName.isEmpty()) {
                 bankAccIsFilled = false;
                 inputAccountName = null;
+            } else {
+                inputAccountName = inputAccountName.trim();
             }
         }
         

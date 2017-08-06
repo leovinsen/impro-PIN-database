@@ -155,8 +155,10 @@ public class AddMemberController implements Initializable {
         if (inputName != null) {
             if (inputName.isEmpty()) {
                 inputName = null;
+            } else {
+                inputName = inputName.trim();
             }
-        }
+        } 
         
         //Checks for four fields associated with bank acc
         //If one of the fields is empty then set bankAccIsFilled = false
@@ -174,6 +176,8 @@ public class AddMemberController implements Initializable {
             if(inputAccountName.isEmpty()) {
                 bankAccIsFilled = false;
                 inputAccountName = null;
+            } else {
+                inputAccountName = inputAccountName.trim();
             }
         }
         

@@ -9,10 +9,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  *
@@ -78,5 +85,27 @@ public class Methods {
         alert.showAndWait();
     }
 
+    public static Stage createProgressDialog(){
+        String vboxCss = "-fx-border-color: derive(black,65%);\n" +
+                   "-fx-border-width: 3;\n";
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(10));
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setStyle(vboxCss);
+              
+        Label label = new Label("Creating excel file...");
+        label.setStyle("-fx-font-size: 18px");
+        
+        ProgressBar pb = new ProgressBar(-1.0);
+        pb.setPrefWidth(200);
+        
+        vbox.getChildren().addAll(label, pb);
+        
+        Stage stage = new Stage(StageStyle.UNDECORATED);
+        Scene scene = new Scene(vbox, 250, 100);
+        stage.setScene(scene);
+        return stage;
+    }
+    
 }
 

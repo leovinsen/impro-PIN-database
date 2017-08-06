@@ -14,6 +14,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -315,16 +317,67 @@ public class Database {
         ArrayList<String[]> arr = new ArrayList<>();
         ps = conn.prepareStatement("SELECT * FROM member where NAME = ?");
         ps.setString(1, name);
-        res = ps.executeQuery();
-        ps.clearParameters();
+        ResultSet temp = ps.executeQuery();
         //if the record exists, res.next will return true
-        while(res.next()){
+        while (temp.next()) {
+            checkMember(temp.getString("IP"));
             String[] memberInfo = getMemberInfo();
             arr.add(memberInfo);
         }
+        ps.clearParameters();
         return arr;
     }
+    
+    public static ArrayList<String[]> findMemberByAccountNo(String accountNo) throws SQLException{
+        ArrayList<String[]> arr = new ArrayList<>();
+        ps = conn.prepareStatement("SELECT IP, PIN, NAME FROM member where ACCOUNT_NUM = ?");
+                ps.setString(1, accountNo);
+        res = ps.executeQuery();
+        while (res.next()){
+            String ip= res.getString("IP");
+            String pin = res.getString("PIN");
+            String name = res.getString("name");
+            String[] memberInfo = new String[]{ip, pin, name};
+            arr.add(memberInfo);
+        }
+        ps.clearParameters();
+        return arr;
+        
+        }
 
+    
+    public static ArrayList<ArrayList<String[]>> findMemberByAccountName(String accountName) throws SQLException {
+        ArrayList<ArrayList<String[]>> arr = new ArrayList<>();
+        ps = conn.prepareStatement("SELECT ACCOUNT_NUM FROM bank_account where owner like ?");
+        ps.setString(1, accountName + "%");
+        res = ps.executeQuery();
+
+        Queue<String> params = new PriorityQueue<>();
+        while (res.next()) {
+            params.add(res.getString("ACCOUNT_NUM"));
+        }
+        ps.clearParameters();
+
+        while (!params.isEmpty()) {
+
+            ps = conn.prepareStatement("SELECT ip, pin, name, account_num FROM member where ACCOUNT_NUM = ?");
+            ps.setString(1, params.remove());
+            res = ps.executeQuery();
+            ArrayList<String[]> subArray = new ArrayList<>();
+            while (res.next()) {
+                String ip = res.getString("ip");
+                String pin = res.getString("pin");
+                String name = res.getString("name");
+                String accountNo = res.getString("account_num");
+                String[] memberInfo = new String[]{ip, pin, name, accountNo};
+                subArray.add(memberInfo);
+            }
+            arr.add(subArray);
+            ps.clearParameters();
+        }
+        return arr;
+
+    }
     
     
     public boolean checkAccount(String param, SearchMethod sm) throws SQLException{
@@ -421,5 +474,19 @@ public class Database {
         //If not found, return null;
         return null;
     }
+    
+    public String getOwner(String accountNo) throws SQLException{
+       ps = conn.prepareStatement("SELECT owner from bank_account where ACCOUNT_NUM = ?");
+       ps.setString(1, accountNo);
+       res = ps.executeQuery();
+       if(res.next()){
+           String owner = res.getString("owner");
+           ps.clearParameters();
+           return owner;
+       }
+       ps.clearParameters();
+       return null;
+    }
 }
+    
 
