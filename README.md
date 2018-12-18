@@ -6,6 +6,6 @@ Basic operations include searching, adding and editing/removing records. There a
 such as showing the information of a disributor's downline, saving the result of a query into a .xls file, and displaying a history of changes made to a particular record.
 
 Each member consists of:
-- an IP (equaivalent of member ID)
-- a PIN (second layer password)
+- an IP (equivalent to member ID)
+- a PIN (a password that is required to modify data of the member on the company's website)
 - a Name 
