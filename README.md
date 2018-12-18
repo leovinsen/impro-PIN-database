@@ -1,13 +1,9 @@
 # impro-PIN-database
-The program is tailored to the needs of distributors of a multi-level marketing company called
-PT. Immunotec Profarmasia in Jakarta, Indonesia.
-It is equaivalent to a digital ledger for the distributors that helps to increase their productivity. However, please note
-that the program has no access to the aforementioned company's database (which is expected), 
-so information has to be entered manually and are known only to the person using it.
+The program was written for distributors of PT. Immunotec Profarmasia in Jakarta, Indonesia.
+It is equivalent to a digital ledger that stores information of downlines of the user.
 
-Basic operations include searching, adding and editing/removing records from the database. There are more sophisticated features
-such as showing the information of direct children of a distributor, saving the result of searches into a .xls file, and saving 
-changes that have been made to a particular record and showing these changes to the user when asked to.
+Basic operations include searching, adding and editing/removing records. There are more sophisticated features
+such as showing the information of a disributor's downline, saving the result of a query into a .xls file, and displaying a history of changes made to a particular record.
 
 Each member consists of:
 - an IP (equaivalent of member ID)
